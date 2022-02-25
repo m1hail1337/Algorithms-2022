@@ -51,6 +51,12 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        try {                                               // Проверка формата
+            sortTimes("input/time_inMy.txt", "temp.txt")
+        } catch (e: IllegalArgumentException) {
+        } finally {
+            File("temp.txt").delete()
+        }
     }
 
     protected fun sortAddresses(sortAddresses: (String, String) -> Unit) {
@@ -133,6 +139,12 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortTemperatures("input/empty.txt", "temp.txt")
             assertFileContent("temp.txt", "")
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortTemperatures("input/temp_inMy.txt", "temp.txt")
+        } catch (e: IllegalArgumentException) {
         } finally {
             File("temp.txt").delete()
         }

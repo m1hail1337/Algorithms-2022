@@ -2,6 +2,9 @@
 
 package lesson1
 
+import java.io.File
+import java.lang.IllegalArgumentException
+
 /**
  * Сортировка времён
  *
@@ -33,7 +36,65 @@ package lesson1
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
 fun sortTimes(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val lines = File(inputName).readLines() //T(N) = O(N); R(N) = O(N)
+    val times = mutableListOf<Pair<Double, String>>()
+    val values = mutableListOf<Double>()
+
+    fun countSeconds(time: String, isMorning: Boolean): Double { // T(N) = O(3)
+        val parts = time.split(":")
+        var result = 0.0
+        for (part in parts) result = result * 60 + part.toInt()
+        if (!isMorning) result += 12 * 3600.0
+        if (parts[0] == "12") result -= 12 * 3600
+        values += result
+        return result
+    }
+
+    for (line in lines) {   // T(N) = O(N); R(N) = O(N)
+        isCorrect(line)
+        times += when (line.split(" ")[1]) {
+            "AM" -> Pair(countSeconds(line.split(" ")[0], true), line.split(" ")[0])
+            else -> Pair(countSeconds(line.split(" ")[0], false), line.split(" ")[0])
+        }
+    }
+    val valuesArray = values.toDoubleArray() // T(N) = O(N); R(N) = O(N)
+    quickSort(valuesArray)   //T(N) = O(Nlog2N); R(N) = O(1)
+    for (element in valuesArray) {      // T(N) = O(N); R(N) = O(N)
+        val timesMap = times.toMap()
+        when {
+            element > 12 * 3600.0 -> writer.write(timesMap[element] + " PM")
+            else -> writer.write(timesMap[element] + " AM")
+        }
+        writer.newLine()
+    }
+    writer.close()
+}
+// Comments:
+// (40): T(N) = O(N) - каждую строку записываем в List; R(N) = O(N) - создаем List из N элементов
+// (44): T(N) = O(3) - всегда 3 эл-та в parts
+// (54): T(N) = O(N) - перебираем каждую line; R(N) = O(N) - заполняем List N элементами
+// (61): T(N) = O(N) - каждое значение добавляем в DoubleArray; R(N) = O(N) - создаем DoubleArray
+// (62): T(N) = O(Nlog2N) - среднее время работы алг. быстрой сортировки; R(N) = O(1) - сортировка на месте
+// (63): T(N) = O(N) - перебираем каждый element; R(N) = O(N) - создаем Map из N элементов
+// Summary: T(N) = 4O(N) + O(3) + O(Nlog2N) = O(Nlog2N) + O(N); R(N) = 4O(N) + O(1) = O(N)
+
+fun isCorrect(line: String) {
+    try {
+        val list = line.split(" ")
+        if (list.size == 2) {
+            if (list[1] == "AM" || list[1] == "PM") {
+                val time = list[0].split(":")
+                if (time.size == 3 && time[0].toInt() < 13 && time[1].toInt() < 60 && time[2].toInt() < 60 &&
+                    time[0].length == 3 && time[1].length == 3 && time[2].length == 3
+                )
+                    return
+            }
+        }
+    } catch (e: Exception) {
+        throw IllegalArgumentException("Incorrect format.")
+    }
+
 }
 
 /**
@@ -97,8 +158,21 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 121.3
  */
 fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val values = File(inputName).readLines().map { it.toDouble() }.toDoubleArray() //T(N) = 3O(N); R(N) = 3O(N)
+    quickSort(values)                       //T(N) = O(Nlog2N); R(N) = O(1)
+    for (value in values) {         //T(N) = O(N); R(N) = O(1)
+        writer.write(value.toString())
+        writer.newLine()
+    }
+    writer.close()
 }
+// Comments:
+// (154): T(N) = 3O(N) тк сначала мы каждую строку записываем в List -> каждую строку .toDouble() -> каждое значение добавляем в DoubleArray
+// (154): R(N) = 3O(N) тк мы создаем List со строками -> создаем List со значениями -> создаем Array со значениями
+// (155): T(N) = O(Nlog2N) - среднее время работы алг. быстрой сортировки; R(N) = O(1) - сортировка на месте
+// (156): T(N) = O(N) - перебор всех значений (линейное время); R(N) = O(1) - ничего не создаем
+// Summary: T(N) = 3O(N) + O(Nlog2N) + O(N) = O(Nlog2N) + O(N); R(N) = 3O(N) + O(1) + O(1) = O(N)
 
 /**
  * Сортировка последовательности

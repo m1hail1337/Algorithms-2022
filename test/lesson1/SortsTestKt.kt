@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 class SortsTestKt {
     private val r = Random(Calendar.getInstance().timeInMillis)
 
-    private fun assertSorted(arr: IntArray, prefix: String) {
+    private fun assertSorted(arr: DoubleArray, prefix: String) {
         for (i in 0 until arr.size - 1) {
             assertTrue(
                 arr[i] <= arr[i + 1],
@@ -46,7 +46,7 @@ class SortsTestKt {
     @Test
     @Tag("Example")
     fun mergeSort() {
-        val arr = intArrayOf(3, 7, 5, 9, 1, 6, 19, 13)
+        val arr = doubleArrayOf(3.1, 7.2, 5.3, 9.4, 1.5, 6.6, 19.7, 13.8)
         mergeSort(arr)
         assertSorted(arr, "MERGE SORT")
     }
@@ -62,23 +62,11 @@ class SortsTestKt {
 
     @Test
     @Tag("Example")
-    fun longMergeSort() {
-        val length = 65536
-        val arr = IntArray(length)
-        for (i in 0 until length) {
-            arr[i] = r.nextInt()
-        }
-        mergeSort(arr)
-        assertSorted(arr, "MERGE SORT LONG")
-    }
-
-    @Test
-    @Tag("Example")
     fun longHeapSort() {
         val length = 65536
-        val arr = IntArray(length)
+        val arr = DoubleArray(length)
         for (i in 0 until length) {
-            arr[i] = r.nextInt()
+            arr[i] = r.nextDouble()
         }
         heapSort(arr)
         assertSorted(arr, "HEAP SORT LONG")
@@ -87,7 +75,7 @@ class SortsTestKt {
     @Test
     @Tag("Example")
     fun quickSort() {
-        val arr = intArrayOf(3, 7, 5, 9, 1, 6, 19, 13)
+        val arr = doubleArrayOf(3.1, 7.2, 5.3, 9.4, 1.5, 6.6, 19.7, 13.8)
         quickSort(arr)
         assertSorted(arr, "QUICK SORT")
     }
@@ -96,27 +84,12 @@ class SortsTestKt {
     @Tag("Example")
     fun longQuickSort() {
         val length = 65536
-        val arr = IntArray(length)
+        val arr = DoubleArray(length)
         for (i in 0 until length) {
-            arr[i] = r.nextInt()
+            arr[i] = r.nextDouble()
         }
         quickSort(arr)
         assertSorted(arr, "QUICK SORT LONG")
-    }
-
-    @Test
-    @Tag("Example")
-    fun longCountingSort() {
-        val length = 65536
-        val limit = 262144
-        val arr = IntArray(length)
-        for (i in 0 until length) {
-            arr[i] = r.nextInt(limit)
-        }
-        val result = countingSort(arr, limit - 1)
-        assertSorted(result, "COUNTING SORT LONG")
-        quickSort(arr)
-        assertArrayEquals(arr, result)
     }
 
     @Test

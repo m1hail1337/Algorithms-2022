@@ -19,7 +19,7 @@ fun <T : Comparable<T>> insertionSort(elements: MutableList<T>) {
     }
 }
 
-private fun merge(elements: IntArray, begin: Int, middle: Int, end: Int) {
+private fun merge(elements: DoubleArray, begin: Int, middle: Int, end: Int) {
     val left = elements.copyOfRange(begin, middle)
     val right = elements.copyOfRange(middle, end)
     var li = 0
@@ -33,7 +33,7 @@ private fun merge(elements: IntArray, begin: Int, middle: Int, end: Int) {
     }
 }
 
-private fun mergeSort(elements: IntArray, begin: Int, end: Int) {
+private fun mergeSort(elements: DoubleArray, begin: Int, end: Int) {
     if (end - begin <= 1) return
     val middle = (begin + end) / 2
     mergeSort(elements, begin, middle)
@@ -41,11 +41,11 @@ private fun mergeSort(elements: IntArray, begin: Int, end: Int) {
     merge(elements, begin, middle, end)
 }
 
-fun mergeSort(elements: IntArray) {
+fun mergeSort(elements: DoubleArray) {
     mergeSort(elements, 0, elements.size)
 }
 
-private fun heapify(elements: IntArray, start: Int, length: Int) {
+private fun heapify(elements: DoubleArray, start: Int, length: Int) {
     val left = 2 * start + 1
     val right = left + 1
     var max = start
@@ -63,13 +63,13 @@ private fun heapify(elements: IntArray, start: Int, length: Int) {
     }
 }
 
-private fun buildHeap(elements: IntArray) {
+private fun buildHeap(elements: DoubleArray) {
     for (start in elements.size / 2 - 1 downTo 0) {
         heapify(elements, start, elements.size)
     }
 }
 
-fun heapSort(elements: IntArray) {
+fun heapSort(elements: DoubleArray) {
     buildHeap(elements)
     for (j in elements.size - 1 downTo 1) {
         val temp = elements[0]
@@ -79,7 +79,7 @@ fun heapSort(elements: IntArray) {
     }
 }
 
-private fun partition(elements: IntArray, min: Int, max: Int): Int {
+private fun partition(elements: DoubleArray, min: Int, max: Int): Int {
     val x = elements[min + random.nextInt(max - min + 1)]
     var left = min
     var right = max
@@ -101,7 +101,7 @@ private fun partition(elements: IntArray, min: Int, max: Int): Int {
     return right
 }
 
-private fun quickSort(elements: IntArray, min: Int, max: Int) {
+private fun quickSort(elements: DoubleArray, min: Int, max: Int) {
     if (min < max) {
         val border = partition(elements, min, max)
         quickSort(elements, min, border)
@@ -109,7 +109,7 @@ private fun quickSort(elements: IntArray, min: Int, max: Int) {
     }
 }
 
-fun quickSort(elements: IntArray) {
+fun quickSort(elements: DoubleArray) {
     quickSort(elements, 0, elements.size - 1)
 }
 
