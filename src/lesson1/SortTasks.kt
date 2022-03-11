@@ -38,14 +38,14 @@ import java.lang.IllegalArgumentException
 fun sortTimes(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val lines = File(inputName).readLines() //T(N) = O(N); R(N) = O(N)
-    val times = mutableListOf<Pair<Double, String>>()
-    val values = mutableListOf<Double>()
+    val times = mutableListOf<Pair<Int, String>>()
+    val values = mutableListOf<Int>()
 
-    fun countSeconds(time: String, isMorning: Boolean): Double { // T(N) = O(3)
+    fun countSeconds(time: String, isMorning: Boolean): Int { // T(N) = O(3)
         val parts = time.split(":")
-        var result = 0.0
+        var result = 0
         for (part in parts) result = result * 60 + part.toInt()
-        if (!isMorning) result += 12 * 3600.0
+        if (!isMorning) result += 12 * 3600
         if (parts[0] == "12") result -= 12 * 3600
         values += result
         return result
@@ -58,12 +58,11 @@ fun sortTimes(inputName: String, outputName: String) {
             else -> Pair(countSeconds(line.split(" ")[0], false), line.split(" ")[0])
         }
     }
-    val valuesArray = values.toDoubleArray() // T(N) = O(N); R(N) = O(N)
-    quickSort(valuesArray)   //T(N) = O(Nlog2N); R(N) = O(1)
+    val valuesArray = countingSort(values.toIntArray(), 86400) // T(N) = O(N) + O(N); R(N) = O(N) + O(N)
     for (element in valuesArray) {      // T(N) = O(N); R(N) = O(N)
         val timesMap = times.toMap()
         when {
-            element > 12 * 3600.0 -> writer.write(timesMap[element] + " PM")
+            element > 12 * 3600 -> writer.write(timesMap[element] + " PM")
             else -> writer.write(timesMap[element] + " AM")
         }
         writer.newLine()
@@ -74,10 +73,10 @@ fun sortTimes(inputName: String, outputName: String) {
 // (40): T(N) = O(N) - каждую строку записываем в List; R(N) = O(N) - создаем List из N элементов
 // (44): T(N) = O(3) - всегда 3 эл-та в parts
 // (54): T(N) = O(N) - перебираем каждую line; R(N) = O(N) - заполняем List N элементами
-// (61): T(N) = O(N) - каждое значение добавляем в DoubleArray; R(N) = O(N) - создаем DoubleArray
-// (62): T(N) = O(Nlog2N) - среднее время работы алг. быстрой сортировки; R(N) = O(1) - сортировка на месте
-// (63): T(N) = O(N) - перебираем каждый element; R(N) = O(N) - создаем Map из N элементов
-// Summary: T(N) = 4O(N) + O(3) + O(Nlog2N) = O(Nlog2N) + O(N); R(N) = 4O(N) + O(1) = O(N)
+// (61.1): T(N) = O(N) - каждое значение добавляем в IntArray; R(N) = O(N) - создаем IntArray
+// (61.2): T(N) = O(N) - среднее время работы алг. сортировки подсчетом; R(N) = O(N) - создаем массив с подсчетом
+// (62): T(N) = O(N) - перебираем каждый element; R(N) = O(N) - создаем Map из N элементов
+// Summary: T(N) = 5O(N) + O(3) = O(N); R(N) = 4O(N) + O(1) = O(N)
 
 fun isCorrect(line: String) {
     try {
@@ -172,7 +171,7 @@ fun sortTemperatures(inputName: String, outputName: String) {
 // (154): R(N) = 3O(N) тк мы создаем List со строками -> создаем List со значениями -> создаем Array со значениями
 // (155): T(N) = O(Nlog2N) - среднее время работы алг. быстрой сортировки; R(N) = O(1) - сортировка на месте
 // (156): T(N) = O(N) - перебор всех значений (линейное время); R(N) = O(1) - ничего не создаем
-// Summary: T(N) = 3O(N) + O(Nlog2N) + O(N) = O(Nlog2N) + O(N); R(N) = 3O(N) + O(1) + O(1) = O(N)
+// Summary: T(N) = 3O(N) + O(Nlog2N) + O(N) = O(Nlog2N); R(N) = 3O(N) + O(1) + O(1) = O(N)
 
 /**
  * Сортировка последовательности
