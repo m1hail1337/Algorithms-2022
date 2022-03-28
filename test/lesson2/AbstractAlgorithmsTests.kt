@@ -64,6 +64,8 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(1, josephTask(1, 1))
         assertEquals(2, josephTask(2, 1))
         assertEquals(50000000, josephTask(50000000, 1))
+        assertEquals(13, josephTask(14, 2)) //my
+        assertEquals(21, josephTask(26, 2)) //my
         assertEquals(3, josephTask(8, 5))
         assertEquals(28, josephTask(40, 3))
         var menNumber = 2
@@ -124,11 +126,13 @@ abstract class AbstractAlgorithmsTests {
 
     fun calcPrimesNumber(calcPrimesNumber: (Int) -> Int) {
         assertEquals(0, calcPrimesNumber(-1))
+        assertEquals(0, calcPrimesNumber(-10))           //my
         assertEquals(0, calcPrimesNumber(1))
         assertEquals(1, calcPrimesNumber(2))
         assertEquals(2, calcPrimesNumber(4))
         assertEquals(4, calcPrimesNumber(10))
         assertEquals(8, calcPrimesNumber(20))
+        assertEquals(9, calcPrimesNumber(23))           //my
         assertEquals(10, calcPrimesNumber(29))
         assertEquals(20, calcPrimesNumber(71))
         assertEquals(100, calcPrimesNumber(541))

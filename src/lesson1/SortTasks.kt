@@ -4,6 +4,7 @@ package lesson1
 
 import java.io.File
 import java.lang.IllegalArgumentException
+import kotlin.math.round
 
 /**
  * Сортировка времён
@@ -158,20 +159,22 @@ fun sortAddresses(inputName: String, outputName: String) {
  */
 fun sortTemperatures(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val values = File(inputName).readLines().map { it.toDouble() }.toDoubleArray() //T(N) = 3O(N); R(N) = 3O(N)
-    quickSort(values)                       //T(N) = O(Nlog2N); R(N) = O(1)
-    for (value in values) {         //T(N) = O(N); R(N) = O(1)
-        writer.write(value.toString())
+    val values =
+        File(inputName).readLines().map { (it.toDouble() * 10.0 + 2730.0).toInt() } //добавляем 2730 для исключения отрицательных случаев (коррекция после сортировки)
+            .toIntArray() //T(N) = 3O(N); R(N) = 4O(N)
+    val sortedArray = countingSort(values, 7730)                //T(N) = O(N); R(N) = O(N)
+    for (value in sortedArray) {                                    //T(N) = O(N); R(N) = O(1)
+        writer.write((round((value * 0.1 - 273) * 10) / 10).toString())
         writer.newLine()
     }
     writer.close()
 }
 // Comments:
-// (154): T(N) = 3O(N) тк сначала мы каждую строку записываем в List -> каждую строку .toDouble() -> каждое значение добавляем в DoubleArray
-// (154): R(N) = 3O(N) тк мы создаем List со строками -> создаем List со значениями -> создаем Array со значениями
-// (155): T(N) = O(Nlog2N) - среднее время работы алг. быстрой сортировки; R(N) = O(1) - сортировка на месте
-// (156): T(N) = O(N) - перебор всех значений (линейное время); R(N) = O(1) - ничего не создаем
-// Summary: T(N) = 3O(N) + O(Nlog2N) + O(N) = O(Nlog2N); R(N) = 3O(N) + O(1) + O(1) = O(N)
+// (162-164): T(N) = 4O(N) тк сначала мы каждую строку записываем в List -> каждую строку .toDouble() -> каждое значение делаем Int'ом -> каждое значение добавляем в IntArray
+// (162-164): R(N) = 3O(N) тк мы создаем List со строками -> создаем List со значениями -> создаем Array со значениями
+// (165): T(N) = O(N) - среднее время работы алг. сортировки подсчетом; R(N) = O(N) - создаем отсортированный массив
+// (166): T(N) = O(N) - перебор всех значений (линейное время); R(N) = O(1) - ничего не создаем
+// Summary: T(N) = 4O(N) + O(N) + O(N) = O(N); R(N) = 3O(N) + O(N) + O(1) = O(N)
 
 /**
  * Сортировка последовательности

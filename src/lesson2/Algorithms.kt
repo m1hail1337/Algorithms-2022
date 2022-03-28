@@ -2,6 +2,7 @@
 
 package lesson2
 
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -16,6 +17,15 @@ package lesson2
  * 187
  * 194
  * 193
+ * 185
+ * ---
+ * 201
+ * 196
+ * 190
+ * 198
+ * 187
+ * 193
+ * 198
  * 185
  *
  * Выбрать два момента времени, первый из них для покупки акций, а второй для продажи, с тем, чтобы разница
@@ -80,8 +90,13 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
  * но приветствуется попытка решить её самостоятельно.
  */
 fun josephTask(menNumber: Int, choiceInterval: Int): Int {
-    TODO()
+    if (menNumber == 1) return 1
+    var result = 1
+    for (i in 2..menNumber)           //T(N) = O(N)
+        result = (result + choiceInterval - 1) % i + 1
+    return result
 }
+//Summary: T(N) = O(N) - перебираем 1 раз R(N) = O(1) - ничего не создаем
 
 /**
  * Наибольшая общая подстрока.
@@ -109,5 +124,25 @@ fun longestCommonSubstring(first: String, second: String): String {
  * Единица простым числом не считается.
  */
 fun calcPrimesNumber(limit: Int): Int {
-    TODO()
+    return if (limit > 1) {
+        val array = Array(limit + 1) { true }       //T(N) = O(N+1); R(N) = O(N+1)
+        var i = 2
+        while (i * i <= limit) {        //T(N) = O(Nlog(N))
+            if (array[i]) {
+                var count = i * i
+                while (count <= limit) {        //T(N) = O(log(N))
+                    array[count] = false
+                    count += i
+                }
+            }
+            i++
+        }
+        array.count { it } - 2      // T(N) = O(N+1)
+    } else 0
 }
+// Comments:
+// (155): T(N) = O(N+1) - каждый true записываем в массив; R(N) = O(N+1) - создаем массив из N+1 элементов
+// (157): T(N) = O(Nlog(N)) - как сумма ряда n/2 + n/3 + n/4 + ... n/n
+// (160): T(N) = O(log(N)) - тк известно, что вероятность того, что число простое оценивается как 1/log(N) -> в этот цикл попадут примерно log(N) случаев
+// (167): T(N) = O(N+1) - пробегаемся по массиву размером N+1
+// Summary: T(N) = 2O(N+1) + O(Nlog(log(N))) = O(Nlog(log(N))); R(N) = O(N+1)
