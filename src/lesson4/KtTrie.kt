@@ -2,6 +2,7 @@ package lesson4
 
 import java.util.*
 
+
 /**
  * Префиксное дерево для строк
  */
@@ -70,8 +71,43 @@ class KtTrie : AbstractMutableSet<String>(), MutableSet<String> {
      *
      * Сложная
      */
-    override fun iterator(): MutableIterator<String> {
-        TODO()
-    }
+    override fun iterator(): MutableIterator<String> =
+        TrieIterator()
 
+
+    inner class TrieIterator internal constructor() : MutableIterator<String> {
+
+        private var words = arrayListOf<String>()
+        private var next = ""
+
+        init {
+            traverse("", root)
+        }
+
+        private fun traverse(word: String, node: Node) {
+            for (child in node.children.keys)               //T(N) = O(N); R(N) = O(N)
+                if (child == 0.toChar()) words += word
+                else traverse(word + child, node.children[child]!!)
+        }
+
+        override fun hasNext(): Boolean = words.isNotEmpty()   //T(N) = O(1); R(N) = O(1)
+
+        override fun next(): String {       //T(N) = O(1); R(N) = O(1)
+            if (!hasNext())
+                throw NoSuchElementException()
+            next = words[0]
+            words.removeAt(0)
+            return next
+        }
+
+        override fun remove() {             //T(N) = O(1); R(N) = O(1)
+            if (next == "")
+                throw IllegalStateException()
+            remove(next)
+            next = ""
+        }
+    }
 }
+//(88): T(N) = O(N) - тк проверку проходит каждый эл-т; R(N) = O(N) - тк добавляем в массив элементы в линейном цикле
+//(93,95,103): T(N) = O(1); R(N) = O(1) - ничего не создаем, код без циклов
+//Summary: T(N) = O(N); R(N) = O(N) - трудо- и ресурсо- емкости обуславливаются инициализацией итератора, его методы же имеют константные показатели времени и памяти
