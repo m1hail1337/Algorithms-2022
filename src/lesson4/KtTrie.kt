@@ -85,7 +85,7 @@ class KtTrie : AbstractMutableSet<String>(), MutableSet<String> {
         }
 
         private fun traverse(word: String, node: Node) {
-            for (child in node.children.keys)               //T(N) = O(N); R(N) = O(N)
+            for (child in node.children.keys)               //T(N) = O(N); R(N) = O(N), где N - число узлов в дереве
                 if (child == 0.toChar()) words += word
                 else traverse(word + child, node.children[child]!!)
         }

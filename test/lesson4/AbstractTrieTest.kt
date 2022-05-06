@@ -84,6 +84,9 @@ abstract class AbstractTrieTest {
                 trieSet.iterator().hasNext(),
                 "Iterator of an empty set should not have any next elements."
             )
+            assertFailsWith<NoSuchElementException>("Iterator of an empty set should not have any next elements.") {
+                trieSet.iterator().next()
+            }
             for (element in controlSet) {
                 trieSet += element
             }
@@ -105,6 +108,9 @@ abstract class AbstractTrieTest {
                 controlSet.isEmpty(),
                 "TrieIterator doesn't traverse the entire set."
             )
+            assertFalse("There is supposedly something although the elements are over") {
+                trieIter.hasNext()
+            }
             assertFailsWith<NoSuchElementException>("Something was supposedly returned after the elements ended") {
                 trieIter.next()
             }
@@ -173,4 +179,41 @@ abstract class AbstractTrieTest {
         }
     }
 
+    protected fun doMyTests() {
+        implementationTest { create().iterator().hasNext() }
+        implementationTest { create().iterator().next() }
+        implementationTest { create().iterator().remove() }
+        val random = Random()
+        for (iteration in 1..100) {
+            val controlSet = sortedSetOf<String>()
+            for (i in 1..5) {
+                val string = random.nextString("abcdefgh", 1, 15)
+                controlSet.add(string)
+            }
+            println("Control set: $controlSet")
+            val trieSet = create()
+            for (element in controlSet) {
+                trieSet += element
+            }
+            val iterator = trieSet.iterator()
+            assertFailsWith<IllegalStateException>("Something was supposedly deleted before the iteration started") {
+                iterator.remove()
+            }
+            iterator.next()
+            while (iterator.hasNext()) {
+                iterator.remove()
+                iterator.next()
+            }
+            assertEquals(1, trieSet.size)
+            assertFalse(iterator.hasNext(), "Trie set with ${trieSet.size} elements shouldn't have next element")
+            assertFailsWith<NoSuchElementException>("Trie set with ${trieSet.size} elements haven't next element") {
+                iterator.next()
+            }
+            iterator.remove()
+            assertEquals(0, trieSet.size)
+            assertFailsWith<IllegalStateException>("There is nothing to remove from an empty set") {
+                iterator.remove()
+            }
+        }
+    }
 }

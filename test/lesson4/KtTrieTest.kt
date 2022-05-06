@@ -26,4 +26,10 @@ class KtTrieTest : AbstractTrieTest() {
         doIteratorRemoveTest()
     }
 
+    @Test
+    @Tag("0")
+    fun myTests() {
+        doMyTests()
+    }
+
 }

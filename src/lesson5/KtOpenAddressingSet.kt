@@ -1,9 +1,13 @@
 package lesson5
 
+import java.util.NoSuchElementException
+
+
 /**
  * Множество(таблица) с открытой адресацией на 2^bits элементов без возможности роста.
  */
 class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>() {
+
     init {
         require(bits in 2..31)
     }
@@ -51,7 +55,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         val startingIndex = element.startingIndex()
         var index = startingIndex
         var current = storage[index]
-        while (current != null) {
+        while (current != null && current != "DD") {
             if (current == element) {
                 return false
             }
@@ -63,6 +67,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         size++
         return true
     }
+
 
     /**
      * Удаление элемента из таблицы
@@ -76,9 +81,21 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
      * Средняя
      */
     override fun remove(element: T): Boolean {
-        TODO("not implemented")
+        val startingIndex = element.startingIndex()
+        var index = startingIndex
+        var current = storage[index]
+        while (current != null) {                   //T(N) = O(1/(1 - A)), где A = size/capacity
+            if (current == element) {
+                storage[index] = "DD"
+                size--
+                return true
+            }
+            index = (index + 1) % capacity
+            current = storage[index]
+        }
+        return false
     }
-
+//Summary: T(N) = O(1/(1 - A)) - тк. трудоемкость операции зависит от коэф. заполнения; R(N) = O(1) - ничего не создаем.
     /**
      * Создание итератора для обхода таблицы
      *
@@ -89,7 +106,36 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
      *
      * Средняя (сложная, если поддержан и remove тоже)
      */
-    override fun iterator(): MutableIterator<T> {
-        TODO("not implemented")
+    override fun iterator(): MutableIterator<T> =
+        OpenAddressingSetIterator()
+
+    inner class OpenAddressingSetIterator internal constructor() : MutableIterator<T> {
+
+        private var counter = 0
+        private var nextIndex = 0
+        private var removeIndex = -1
+        private val startSize = size
+
+
+        override fun hasNext(): Boolean = counter < startSize       //T(N) = O(1); R(N) = O(1)
+
+        override fun next(): T {
+            if (hasNext()) {
+                while (nextIndex < capacity && (storage[nextIndex] == null) || storage[nextIndex] == "DD") nextIndex++  //T(N) = O(1/(1 - A)), где A = size/capacity
+                removeIndex = nextIndex
+                counter++
+                nextIndex++
+                return storage[removeIndex] as T
+            } else throw NoSuchElementException()
+        }
+
+        override fun remove() {     //T(N) = O(1); R(N) = O(1)
+            if (removeIndex == -1)
+                throw IllegalStateException()
+            remove(storage[removeIndex] as T)
+        }
     }
+//(124): T(N) = O(1/(1 - A)) - тк. трудоемкость операции зависит от коэф. заполнения; R(N) = O(1) - ничего не создаем.
+//(120, 132): T(N) = O(1); R(N) = O(1) - ничего не создаем, код без циклов
+//Summary: T(N) = O(1/(1 - A)) - трудоемкость итератора обуславливается реализацией next(); R(N) = O(1) - ничего не создаем.
 }
