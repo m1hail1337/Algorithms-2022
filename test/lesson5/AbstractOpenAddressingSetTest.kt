@@ -177,4 +177,42 @@ abstract class AbstractOpenAddressingSetTest {
             println("All clear!")
         }
     }
+
+    protected fun doMyTests() {
+        val random = Random()
+        for (iteration in 1..100) {
+            val controlSet = sortedSetOf<String>()
+            for (i in 1..5) {
+                val string = random.nextString("abcdefgh", 1, 15)
+                controlSet.add(string)
+            }
+            println("Control set: $controlSet")
+            val openAddressingSet = create<String>(random.nextInt(6) + 4)
+            for (element in controlSet) {
+                openAddressingSet += element
+            }
+            val iterator = openAddressingSet.iterator()
+            assertFailsWith<IllegalStateException>("Something was supposedly deleted before the iteration started") {
+                iterator.remove()
+            }
+            iterator.next()
+            while (iterator.hasNext()) {
+                iterator.remove()
+                iterator.next()
+            }
+            assertEquals(1, openAddressingSet.size)
+            assertFalse(
+                iterator.hasNext(),
+                "Open Addressing Set with ${openAddressingSet.size} elements shouldn't have next element"
+            )
+            assertFailsWith<NoSuchElementException>("Open Addressing Set with ${openAddressingSet.size} elements haven't next element") {
+                iterator.next()
+            }
+            iterator.remove()
+            assertEquals(0, openAddressingSet.size)
+            assertFailsWith<IllegalStateException>("There is nothing to remove from an empty set") {
+                iterator.remove()
+            }
+        }
+    }
 }
