@@ -123,6 +123,66 @@ abstract class AbstractGraphTests {
         loop3.assert(shouldExist = false, graph = graph3)
     }
 
+    fun myFindEulerLoop(findEulerLoop: Graph.() -> List<Graph.Edge>) {
+        //test1
+        val myGraph1 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")          //Тестовое доказательство леммы о двух рукопожатиях:
+            val e = addVertex("E")          //Данный цикл Эйлера несуществует тк в нем присутствуют 2 вершины
+            val f = addVertex("F")          //нечетной степени (C и I), что обеспечивает лишь эйлеров путь -
+            val g = addVertex("G")          //случай, в котором мы проходим через все ребра, но не возвращаемся в
+            val h = addVertex("H")          //исх. положение.
+            val i = addVertex("I")
+            val j = addVertex("J")
+            val k = addVertex("K")
+            val x = addVertex("X")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(a, e)
+            addConnection(d, k)
+            addConnection(e, j)
+            addConnection(j, k)
+            addConnection(b, f)
+            addConnection(c, i)
+            addConnection(f, i)
+            addConnection(i, x) //added
+            addConnection(x, c) //added
+            addConnection(b, g)
+            addConnection(g, h)
+            addConnection(h, c)
+        }.build()
+        val myLoop1 = myGraph1.findEulerLoop()
+        myLoop1.assert(shouldExist = false, graph = myGraph1)
+        //test2
+        val myGraph2 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")          //Тестовое доказательство леммы о двух рукопожатиях:
+            val e = addVertex("E")          //Здесь же у одной из вершин (C) целых 6(чет) ребер
+            val f = addVertex("F")          //и все равно эйлеров цикл существует
+            val g = addVertex("G")
+            val h = addVertex("H")
+            val i = addVertex("I")
+            addConnection(a, c)
+            addConnection(c, b)
+            addConnection(b, d)
+            addConnection(d, e)
+            addConnection(e, c)
+            addConnection(c, f)
+            addConnection(f, g)
+            addConnection(g, h)
+            addConnection(h, c)
+            addConnection(c, i)
+            addConnection(i, a)
+        }.build()
+        val myLoop2 = myGraph2.findEulerLoop()
+        myLoop2.assert(shouldExist = true, graph = myGraph2)
+    }
+
     fun minimumSpanningTree(minimumSpanningTree: Graph.() -> Graph) {
         val emptyGraph = GraphBuilder().build()
         assertTrue(emptyGraph.minimumSpanningTree().edges.isEmpty())
@@ -351,6 +411,40 @@ abstract class AbstractGraphTests {
         }.build()
         val longestPath3 = graph3.longestSimplePath()
         assertEquals(6, longestPath3.length)
+    }
+
+    fun myLongestSimplePath(longestSimplePath: Graph.() -> Path) {
+        val unconnected = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val g = addVertex("G")
+            addConnection(a, b)
+            addConnection(c, d)
+            addConnection(e, g)
+        }.build()
+        val longestUnconnectedPath = unconnected.longestSimplePath()
+        assertEquals(1, longestUnconnectedPath.length)
+
+        val sunGraph = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            val g = addVertex("G")
+            addConnection(a, d)
+            addConnection(b, d)
+            addConnection(c, d)
+            addConnection(e, d)
+            addConnection(f, d)
+            addConnection(g, d)
+        }.build()
+        val longestSunGraphPath = sunGraph.longestSimplePath()
+        assertEquals(2, longestSunGraphPath.length)
     }
 
     fun baldaSearcher(baldaSearcher: (String, Set<String>) -> Set<String>) {
