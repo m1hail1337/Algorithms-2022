@@ -125,16 +125,17 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
                 removeIndex = nextIndex
                 counter++
                 nextIndex++
-                return storage[removeIndex] as T
+                @Suppress("UNCHECKED_CAST") return storage[removeIndex] as T
             } else throw NoSuchElementException()
         }
 
         override fun remove() {     //T(N) = O(1); R(N) = O(1)
             if (removeIndex == -1 || size == 0)
                 throw IllegalStateException()
-            remove(storage[removeIndex] as T)
+            @Suppress("UNCHECKED_CAST") remove(storage[removeIndex] as T)
         }
     }
+// Comments:
 //(124): T(N) = O(1/(1 - A)) - тк. трудоемкость операции зависит от коэф. заполнения; R(N) = O(1) - ничего не создаем.
 //(120, 132): T(N) = O(1); R(N) = O(1) - ничего не создаем, код без циклов
 //Summary: T(N) = O(1/(1 - A)) - трудоемкость итератора обуславливается реализацией next(); R(N) = O(1) - ничего не создаем.

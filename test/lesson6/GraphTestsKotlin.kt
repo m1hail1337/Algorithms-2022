@@ -12,6 +12,12 @@ class GraphTestsKotlin : AbstractGraphTests() {
     }
 
     @Test
+    @Tag("0")
+    fun myTestFindEulerLoop() {
+        myFindEulerLoop { findEulerLoop() }
+    }
+
+    @Test
     @Tag("7")
     fun testMinimumSpanningTree() {
         minimumSpanningTree { minimumSpanningTree() }
@@ -27,6 +33,12 @@ class GraphTestsKotlin : AbstractGraphTests() {
     @Tag("8")
     fun testLongestSimplePath() {
         longestSimplePath { longestSimplePath() }
+    }
+
+    @Test
+    @Tag("0")
+    fun myTestLongestSimplePath() {
+        myLongestSimplePath { longestSimplePath() }
     }
 
     @Test
